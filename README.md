@@ -8,6 +8,9 @@
 
  * It is aimed for cases when one wants to be more flexible with selection of CLK/DIO pins, or when I2C pins provided by the MCU are already busy.
 
+## Example:
+Switch to the example branch to see a complete STM-IDE project
+
 ## Usage:
 ```
 #include "TM1637.h"
