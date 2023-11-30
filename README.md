@@ -1,4 +1,4 @@
-# TM1637 7-segment 4-digit display library
+# TM1637 7-segment 4-digit display library for STM32 MCU
 
 ![display image](https://i.ebayimg.com/images/g/BtQAAOSwX3BfHJdf/s-l300.jpg)
 
