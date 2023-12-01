@@ -16,8 +16,6 @@ enum PinState { DOWN=0, UP };
  * So ASCIIMap['a'] will return the byte that has to be sent
  * to the display.
  * Lower case and upper case character values are identical.
- * '?' comment means that character is possible to show,
- * but it is in #TODO stage
  */
 const 	uint8_t ASCIIMap[128] = {
 		0, 0, 0, 0, 0, 0, 0, 0,
@@ -25,9 +23,11 @@ const 	uint8_t ASCIIMap[128] = {
 		0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 0, 0,
-		0, 0, 0, 0, 0,
-		0, // - ?
-		0, 0,
+		0, 0, 0, 0,
+		0x8, // , (_)
+		0x40, // -
+		0x8, // . (_)
+		0,
 		0x3f, // 0
 		0x06, // 1
 		0x5b, // 2
@@ -45,25 +45,28 @@ const 	uint8_t ASCIIMap[128] = {
 		0x5e, // d
 		0x79, // e
 		0x71, // f
-		0x3d, // g ? b1101111
-		0, // h ?
-		0, // i ?
-		0, // J	?
-		0, // -
-		0, // l ?
-		0, // -
-		0, // n ?
-		0, // o ?
-		0, // p ?
-		0, // q ?
-		0, // r ?
-		0x6d, // s ==  5
-		0,
-		0, // u ?
-		0, 0, 0,
-		0, // y ?
-		0, 0, 0, 0, 0,
-		0, // _ ?
+		0x3d, // g
+		0x76, // h
+		0x04, // i
+		0x1e, // j
+		0x75, // k
+		0x38, // l
+		0x49, // m
+		0x54, // n
+		0x5c, // o
+		0x73, // p
+		0x67, // q
+		0x50, // r
+		0x6d, // s
+		0x78, // t
+		0x1c, // u
+		0x3e, // V
+		0x7e, // W
+		0x76, // x (H)
+		0x6e, // y
+		0x5b, // z (2)
+		0, 0, 0, 0,
+		0x8, // _
 		0,
 		0x77, // a
 		0x7c, // b
@@ -71,24 +74,27 @@ const 	uint8_t ASCIIMap[128] = {
 		0x5e, // d
 		0x79, // e
 		0x71, // f
-		0x3d, // g ? b1101111
-		0, // h ?
-		0, // i ?
-		0, // J	?
-		0,
-		0, // l ?
-		0,
-		0, // n ?
-		0, // o ?
-		0, // p ?
-		0, // q ?
-		0, // r ?
-		0x6d, // s ==  5
-		0,
-		0, // u ?
-		0, 0, 0,
-		0, // y ?
-		0, 0
+		0x3d, // g
+		0x76, // h
+		0x04, // i
+		0x1e, // j
+		0x75, // k
+		0x38, // l
+		0x49, // m
+		0x54, // n
+		0x5c, // o
+		0x73, // p
+		0x67, // q
+		0x50, // r
+		0x6d, // s
+		0x78, // t
+		0x1c, // u
+		0x3e, // V
+		0x7e, // W
+		0x76, // x (H)
+		0x6e, // y
+		0x5b, // z (2)
+		0
 	};
 
 // some global vars, they are only visible in the scope
@@ -307,4 +313,26 @@ void TM1637DisplayNumber(uint16_t v, bool displaySeparator)
         v /= 10;
     }
     TM1637DisplayText(digitArr, sizeof(digitArr), displaySeparator);
+}
+
+void TM1637Crowl(uint16_t initialDelay, uint16_t charDelay, const char *fmt, ...) {
+	char buf[BUF_LEN + 4] = {};
+	uint8_t *ptr = (uint8_t*)buf; // ptr used to roll through the buffer
+	int actualLen = 0;
+	va_list vl;
+
+	va_start(vl, fmt);
+	actualLen = vsnprintf(buf, BUF_LEN, fmt, vl);
+	va_end(vl);
+
+	if (actualLen < 1) return ;
+	TM1637DisplayText(ptr, 4, false);
+	HAL_Delay(initialDelay);
+	++ptr;
+	for (int i = 1; i < actualLen + 4; ++i) {
+		TM1637DisplayText(ptr, 4, false);
+		HAL_Delay(charDelay);
+		++ptr;
+	}
+	HAL_Delay(initialDelay);
 }
