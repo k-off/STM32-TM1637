@@ -8,6 +8,12 @@
 
  * It is aimed for cases when one wants to be more flexible with selection of CLK/DIO pins, or when I2C pins provided by the MCU are already busy.
 
+## Added Crawler function
+
+It formats the string as printf does, and shows it on the display:
+
+![gif](GIF.gif)
+
 ## Example:
 Switch to the example branch to see a complete STM-IDE project
 
@@ -25,10 +31,11 @@ int main(void)
   TM1637SetBrightness(Brightness1);
   while (1)
   {
-    TM1637DisplayText(ptr, textSize);	// display text
-    HAL_Delay(500);
-    TM1637DisplayNumber(s, s&1);       // display number with and without delimiter
-    HAL_Delay(500);
+    TM1637Crawl(750, 375, "Hello world, its %04d pm", 420); // rolls through the message and shows it char by char
+    //TM1637DisplayText(ptr, textSize);	// display text
+    //HAL_Delay(500);
+    //TM1637DisplayNumber(s, s&1);       // display number with and without delimiter
+    //HAL_Delay(500);
     ++ptr;                            // move beginning of the displayed text to the next character
     ++s;
     if (s > textSize) {s = 0; ptr = text;} //start from beginning
