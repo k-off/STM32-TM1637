@@ -127,7 +127,7 @@ void TM1637DisplayNumber(uint16_t v, bool displaySeparator);
   * @param	... - variable number of arguments that match format string, as in printf()
   * @retval None
  */
-void TM1637Crowl(uint16_t initialDelay, uint16_t charDelay, const char *fmt, ...);
+void TM1637Ticker(uint16_t initialDelay, uint16_t charDelay, const char *fmt, ...);
 
 #ifdef __cplusplus
 }

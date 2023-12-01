@@ -315,7 +315,7 @@ void TM1637DisplayNumber(uint16_t v, bool displaySeparator)
     TM1637DisplayText(digitArr, sizeof(digitArr), displaySeparator);
 }
 
-void TM1637Crowl(uint16_t initialDelay, uint16_t charDelay, const char *fmt, ...) {
+void TM1637Ticker(uint16_t initialDelay, uint16_t charDelay, const char *fmt, ...) {
 	char buf[BUF_LEN + 4] = {};
 	uint8_t *ptr = (uint8_t*)buf; // ptr used to roll through the buffer
 	int actualLen = 0;

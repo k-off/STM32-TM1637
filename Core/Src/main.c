@@ -103,7 +103,7 @@ int main(void)
   while (1)
   {
 	  HAL_GPIO_TogglePin(GPIOC, (1<<13));
-	  TM1637Crowl(750, 375, "    hello world, its %04d pm", 420);
+	  TM1637Ticker(750, 375, "    hello world, its %04d pm", 420);
 //	  TM1637DisplayText(ptr, 4, false);
 //	  HAL_Delay(500);
 //	  TM1637DisplayNumber(s, s&1);
