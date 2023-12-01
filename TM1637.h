@@ -26,18 +26,18 @@
  *		TM1637SetBrightness(Brightness1);
  *		while (1)
  *		{
- *			TM1637DisplayText(ptr, textSize);	// display text
- *			HAL_Delay(500);
- *			TM1637DisplayNumber(s, s&1);		// display number with and without delimiter
- *			HAL_Delay(500);
- *			++ptr;								// move beginning of the displayed text to the next character
+ *			TM1637Crowl(750, 375, "    hello world, its %04d pm", 420); // display formatted text as crowler
+ *			//TM1637DisplayText(ptr, textSize);	// display text
+ *			//HAL_Delay(500);
+ *			//TM1637DisplayNumber(s, s&1);		// display number with and without delimiter
+ *			//HAL_Delay(500);
+ *			//++ptr;								// move beginning of the displayed text to the next character
  *			++s;
  *			if (s > textSize) {s = 0; ptr = text;} //start from beginning
  *		}
  *		return 0;
  *	}
  *
- *	TODO: update ASCIIMap with extra characters to display
  *	TODO: implement delays using timers
  *	TODO: add support for reading from slave devices
  *
@@ -57,6 +57,8 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 /**
  * TM1637 supports 8 brightness settings
@@ -72,6 +74,8 @@ enum Brightness {
 	Brightness6,
 	Brightness7
 };
+
+#define BUF_LEN 128
 
 /**
   * @brief	Initialize desired port(s) and pins for communication with
@@ -104,14 +108,26 @@ void TM1637DisplayText(uint8_t *txt, uint8_t len, bool displaySeparator);
 /**
   * @brief	Displays up to 4 least significant digits of the provided
   * 		unsigned number, i.e. 12345 will display '2345'
-  * 		Use itoa and feed it's result into TM1637DisplayText to
-  * 		show entire number
+  * 		Use TM1637Crowl() as analog of printf() for TM1637 display
   * @param	v - unsigned number to display
   * @param	displaySeparator - boolean flag, enable/disable separator
   * @retval None
  */
 void TM1637DisplayNumber(uint16_t v, bool displaySeparator);
 
+/**
+  * @brief	Displays  formatted string with user provided initial delay
+  * 		and a delay after each character.
+  * 		It is printf + crawler for TM1637 display.
+  * 		Usage: TM1637Crowl(500, 250, "Hi %d, %s", 5, "folks");
+  * 		Update BUF_LEN in TM1637.h if really long messages are expected
+  * @param	initialDelay - delay after first 4 characters appear on dispay, ms
+  * @param	charDelay - delay after next character was displayed, ms
+  * @param	fmt - format string, as in printf()
+  * @param	... - variable number of arguments that match format string, as in printf()
+  * @retval None
+ */
+void TM1637Crowl(uint16_t initialDelay, uint16_t charDelay, const char *fmt, ...);
 
 #ifdef __cplusplus
 }
